@@ -128,24 +128,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer_class,
             related_field
     ):
-        if request.method == 'POST':
-            if not related_field.filter(
-                    user=request.user, recipe=recipe).exists():
-                related_field.create(
-                    user=request.user, recipe=recipe)
-                serializer = serializer_class(
-                    recipe, context={'request': request})
-                return Response(
-                    serializer.data,
-                    status=status.HTTP_201_CREATED)
-            return Response(
-                {'errors': 'Рецепт уже в избранном.'},
-                status=status.HTTP_400_BAD_REQUEST)
-
-        related_field.filter(user=request.user, recipe=recipe).delete()
-        return Response(
-            {'detail': 'Успешное удаление'},
-            status=status.HTTP_204_NO_CONTENT)
+        data = related_field.filter(user=request.user, recipe=recipe).first()
+        if request.method == "POST":
+            if data:
+                return Response( 
+                        {'errors': 'Рецепт уже в избранном.'}, 
+                        status=status.HTTP_400_BAD_REQUEST) 
+            related_field.create(user=request.user, recipe=recipe)
+            serializer = serializer_class( 
+                            recipe, context={'request': request}) 
+            return Response( 
+                serializer.data, 
+                status=status.HTTP_201_CREATED)
+        if request.method == 'DELETE':
+            if data:
+                data.delete()
+            return Response( 
+                    {'detail': 'Успешное удаление'}, 
+                    status=status.HTTP_204_NO_CONTENT) 
 
     @action(
         detail=True, methods=['post', 'delete'],
