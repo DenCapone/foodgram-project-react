@@ -166,17 +166,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=False, methods=['get'],
         permission_classes=(IsAuthenticated,))
-    def download_shopping_cart(self, request):
-        ingredients = (
-            RecipeIngredient.objects
-            .filter(recipe__shopping_recipe__user=request.user)
-            .values('ingredient')
-            .annotate(total_amount=Sum('amount'))
-            .values_list(
-                'ingredient__name', 'total_amount',
-                'ingredient__measurement_unit')
+   def download_shopping_cart(self, request): 
+        ingredients = ( 
+            RecipeIngredient.objects .filter(
+                recipe__shopping_recipe__user=request.user
+            ).values(
+                'ingredient'
+            ).annotate(
+                total_amount=Sum('amount')
+            ).values_list( 
+                'ingredient__name',
+                'total_amount', 
+                'ingredient__measurement_unit'
+            ) 
         )
-
         wishlist = []
         for item in ingredients:
             wishlist.append(
