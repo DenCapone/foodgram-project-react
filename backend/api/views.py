@@ -131,21 +131,21 @@ class RecipeViewSet(viewsets.ModelViewSet):
         data = related_field.filter(user=request.user, recipe=recipe).first()
         if request.method == "POST":
             if data:
-                return Response( 
-                        {'errors': 'Рецепт уже в избранном.'}, 
-                        status=status.HTTP_400_BAD_REQUEST) 
+                return Response(
+                    {'errors': 'Рецепт уже в избранном.'},
+                    status=status.HTTP_400_BAD_REQUEST)
             related_field.create(user=request.user, recipe=recipe)
-            serializer = serializer_class( 
-                            recipe, context={'request': request}) 
-            return Response( 
-                serializer.data, 
+            serializer = serializer_class(
+                recipe, context={'request': request})
+            return Response(
+                serializer.data,
                 status=status.HTTP_201_CREATED)
         if request.method == 'DELETE':
             if data:
                 data.delete()
-            return Response( 
-                    {'detail': 'Успешное удаление'}, 
-                    status=status.HTTP_204_NO_CONTENT) 
+            return Response(
+                {'detail': 'Успешное удаление'},
+                status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=True, methods=['post', 'delete'],
@@ -167,18 +167,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=False, methods=['get'],
         permission_classes=(IsAuthenticated,))
     def download_shopping_cart(self, request):
-        ingredients = ( 
+        ingredients = (
             RecipeIngredient.objects .filter(
                 recipe__shopping_recipe__user=request.user
             ).values(
                 'ingredient'
             ).annotate(
                 total_amount=Sum('amount')
-            ).values_list( 
+            ).values_list(
                 'ingredient__name',
-                'total_amount', 
+                'total_amount',
                 'ingredient__measurement_unit'
-            ) 
+            )
         )
         wishlist = []
         for item in ingredients:
