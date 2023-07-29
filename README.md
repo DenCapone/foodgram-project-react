@@ -8,5 +8,5 @@ admin
 anton@mail.ru
 Anton121
 
-anton@mail.ru
+pedro@mail.ru
 Pedro121
