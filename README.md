@@ -51,7 +51,7 @@ sudo apt-get install docker-compose-plugin
 
 Клонируйте репозиторий:
 ```
-git clone https://https://github.com/DenCapone/foodgram-project-react.git
+git clone https://github.com/DenCapone/foodgram-project-react.git
 ```
 В папке с проектом переименуйте файл `.env.example` в `.env` и заполните его своими данными:
 
